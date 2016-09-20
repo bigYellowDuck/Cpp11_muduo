@@ -6,7 +6,7 @@ namespace {
 class Noncopyable {
 public:
     Noncopyable(const Noncopyable &) = delete;
-    Noncopyable& operator=(const Noncopyable &) = delete;
+    const Noncopyable& operator=(const Noncopyable &) = delete;
 protected:
     Noncopyable() {}
     ~Noncopyable() {}

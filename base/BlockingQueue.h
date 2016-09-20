@@ -57,7 +57,7 @@ public:
         return _queue.size();
     }
 private:
-    std::mutex _mutex;
+    mutable std::mutex _mutex;
     std::condition_variable _notEmpty; 
     std::deque<T> _queue;
 }; 
