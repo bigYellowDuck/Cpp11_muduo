@@ -1,7 +1,7 @@
 #ifndef MUDUO_BASE_NONCOPYABLE_H
 #define MUDUO_BASE_NONCOPYABLE_H
 
-namespace {
+namespace muduo {
 
 class Noncopyable {
 public:
