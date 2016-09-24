@@ -52,12 +52,10 @@ class Timestamp
         return Timestamp(static_cast<int64_t>(t) * kMicroSecondsPerSecond + microseconds);
     }
 
-    static const int kMicroSecondsPerSecond;
+    static const int kMicroSecondsPerSecond = 1000 * 1000;
  private:
     int64_t _microSecondsSinceEpoch;
 };
-
-const int Timestamp::kMicroSecondsPerSecond = 1000 * 1000;
 
 
 inline bool operator<(Timestamp lhs, Timestamp rhs)
