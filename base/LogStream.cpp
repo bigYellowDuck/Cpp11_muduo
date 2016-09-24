@@ -1,6 +1,7 @@
 #include "LogStream.h"
 #include <algorithm>
 #include <limits>
+#include <stdio.h>
 
 namespace muduo 
 {
@@ -130,7 +131,7 @@ LogStream& LogStream::operator<<(unsigned long long v)
 LogStream& LogStream::operator<<(const void* p)
 {
     uintptr_t i = reinterpret_cast<uintptr_t>(p);
-    if (_buffer.avail() > kMaxNumericSize)
+    if (_buffer.avail() >= kMaxNumericSize)
     {
         char* buf = _buffer.current();
         buf[0] = '0';
@@ -144,11 +145,13 @@ LogStream& LogStream::operator<<(const void* p)
 LogStream& LogStream::operator<<(double v)
 {
     // fixme
+    if (_buffer.avail() >= kMaxNumericSize)
+    {
+        size_t len = snprintf(_buffer.current(), kMaxNumericSize, "%.12g", v);
+        _buffer.add(len);
+    }
     return *this;
 }
 
 }   // end of namespace muduo
-
-using namespace muduo;
-using namespace muduo::detail;
 
