@@ -177,8 +177,72 @@ private:
     static const int kMaxNumericSize = 32;
 };
 
+class Fmt : public Noncopyable
+{
+ public:
+    template <typename T>
+    Fmt(const char* fmt, T val);
+
+    const char* data() const { return _buf; }
+    size_t length() const { return _length; }
+ 
+ private:
+    char _buf[32];
+    size_t _length;
+};
+
+template <typename T>
+Fmt::Fmt(const char* fmt, T val)
+{
+    static_assert(std::is_arithmetic<T>::value == true, "val is not arithmetic");
+    _length = snprintf(_buf, sizeof(_buf), fmt, val);
+    assert(_length < sizeof(_buf));
+}
+
+inline LogStream& operator<<(LogStream& s, const Fmt& fmt)
+{
+    s.append(fmt.data(), fmt.length());
+    return s;
+}
+
 }   // end of namespace muduo
 
+#define LOG_TRACE if(muduo::Logger::LogLevel() <= muduo::Logger::TRACE) \
+    muduo::Logger(__FILE__, __LINE__, muduo::Logger::TRACE, __func__).stream()
+#define LOG_DEBUG if(muduo::Logger::LogLevel() <= muduo::Logger::DEBUG) \
+    muduo::Logger(__FILE__, __LINE__, muduo::Logger::DEBUG, __func__).stream()
+#define LOG_INFO if(muduo::Logger::LogLevel() <= muduo::Logger::INFO) \
+    muduo::Logger(__FILE__, __LINE__, muduo::Logger::INFO, __func__).stream()
+#define LOG_WARN muduo::Logger(__FILE__, __LINE__, muduo::Logger::LOG_WARN).stream()
+#define LOG_ERROR muduo::Logger(__FILE__, __LINE__, muduo::Logger::ERROR).stream()
+#define LOG_FATAL muduo::Logger(__FILE__, __LINE__, muduo::Logger::FATAL).stream()
+#define LOG_SYSERR muduo::Logger(__FILE__, __LINE__, false).stream()
+#define LOG_SYSFATAL muduo::Logger(__FILE__, __LINE__, true).stream()
 
 
 #endif // MUDUO_BASE_LOGSTREAM_H
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
