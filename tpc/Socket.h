@@ -50,7 +50,7 @@ class Socket : muduo::Noncopyable
     InetAddress getPeerAddr() const noexcept;
 
     int read(void *buf, int len);
-    int write(void *buf, int len);
+    int write(const void *buf, int len);
 
     // factory methods
     static Socket createTCP();

@@ -100,6 +100,7 @@ InetAddress Socket::getPeerAddr() const noexcept
 
 int Socket::read(void *buf, int len)
 {
+    /*
     char *ptr = static_cast<char *>(buf);
     int nleft = len;
     int nread;
@@ -119,27 +120,36 @@ int Socket::read(void *buf, int len)
         ptr += nread;
     }
     return len-nleft;
+    */
+    int nread = 0;
+    while (nread < len)
+    {
+        int nr = ::read(_sockfd, static_cast<char *>(buf) + nread, len - nread);
+        if (nr > 0)
+            nread += nr;
+        else if (nr == 0)  // EOF
+            break;
+        else if (errno != EINTR)
+            break;
+    }
+    return nread;
+    
 }
 
-int Socket::write(void *buf, int len)
+int Socket::write(const void *buf, int len)
 {
-    char *ptr = static_cast<char *>(buf);
-    int nleft = len;
-    int nwritten;
-
-    while (nleft > 0)
+    int nwritten = 0;
+    while (nwritten < len)
     {
-        if ((nwritten = ::write(_sockfd, ptr, nleft) <= 0))
-        {
-            if (nwritten < 0 && errno == EINTR)
-                nwritten = 0;  // and call write() again
-            else    
-                return -1;
-        }
-        nleft -= nwritten;
-        ptr += nwritten;
+        int nw = ::write(_sockfd, static_cast<const char*>(buf) + nwritten, len - nwritten);
+        if (nw > 0)
+            nwritten += nw;
+        else if (nw == 0)  // EOF
+            break;
+        else if (errno != EINTR)
+            break;
     }
-    return len;
+    return nwritten;
 }
 
 Socket Socket::createTCP()

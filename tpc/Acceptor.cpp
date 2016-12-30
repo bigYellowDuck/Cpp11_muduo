@@ -1,5 +1,6 @@
 #include "Acceptor.h"
 #include "InetAddress.h"
+#include "TcpStream.h"
 
 Acceptor::Acceptor(const InetAddress &listenaddr)
   : _listenSock(Socket::createTCP())
