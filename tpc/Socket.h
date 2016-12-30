@@ -26,6 +26,8 @@ class Socket : muduo::Noncopyable
         swap(rhs);
         return *this;
     }
+    
+    int fd() const noexcept { return _sockfd; }
 
     void swap(Socket &rhs)
     {
